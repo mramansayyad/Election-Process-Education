@@ -18,6 +18,15 @@ const JargonBuster = React.lazy(() => import('./components/buster/JargonBuster')
 function App() {
   const { voterData, resetJourney, signOut } = useVoter();
 
+  // Log analytical events to BigQuery when dashboard is viewed
+  React.useEffect(() => {
+    if (voterData.step >= 3 && voterData.stateCode) {
+      import('./services/bigQueryAnalytics').then(({ trackRegionalInterest }) => {
+        trackRegionalInterest(voterData.stateCode);
+      }).catch(err => console.error('Failed to load BigQuery service', err));
+    }
+  }, [voterData.step, voterData.stateCode]);
+
   // Route 1: Not logged in → show Login
   const isAuthenticated = Boolean(voterData.user);
   if (!isAuthenticated) {

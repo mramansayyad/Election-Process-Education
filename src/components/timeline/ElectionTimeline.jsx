@@ -20,8 +20,12 @@ const ElectionTimeline = () => {
           <p className="text-slate-500 text-sm">Key ECI dates and deadlines for your state.</p>
         </div>
         {nextDeadline && (
-          <div className="bg-primary-50 px-4 py-2 rounded-full border border-primary-100 flex items-center gap-2">
-            <Clock size={16} className="text-primary-600" />
+          <div 
+            className="bg-primary-50 px-4 py-2 rounded-full border border-primary-100 flex items-center gap-2"
+            role="status"
+            aria-live="polite"
+          >
+            <Clock size={16} className="text-primary-600" aria-hidden="true" />
             <span className="text-sm font-bold text-primary-700">
               {getDaysRemaining(nextDeadline.date)} days until {nextDeadline.title}
             </span>
@@ -29,9 +33,9 @@ const ElectionTimeline = () => {
         )}
       </div>
 
-      <div className="relative">
+      <div className="relative" role="list" aria-label="Election milestones list">
         {/* Vertical Line */}
-        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 bg-slate-100 -translate-x-1/2" />
+        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 bg-slate-100 -translate-x-1/2" aria-hidden="true" />
 
         <div className="space-y-12">
           {deadlines.map((item, idx) => {
@@ -48,6 +52,8 @@ const ElectionTimeline = () => {
                 className={`relative flex flex-col md:flex-row items-center gap-8 ${
                   isPast ? 'opacity-50' : 'opacity-100'
                 }`}
+                role="listitem"
+                aria-current={isNext ? "step" : undefined}
               >
                 {/* Timeline Dot */}
                 <div className={`absolute left-4 md:left-1/2 w-6 h-6 rounded-full border-4 border-white shadow-md -translate-x-1/2 z-10 ${
@@ -86,9 +92,10 @@ const ElectionTimeline = () => {
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="p-2 bg-slate-50 text-slate-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
+                        aria-label={`Add ${item.title} to Google Calendar`}
                         title="Add to Google Calendar"
                       >
-                        <Plus size={20} />
+                        <Plus size={20} aria-hidden="true" />
                       </a>
                     </div>
                   </div>

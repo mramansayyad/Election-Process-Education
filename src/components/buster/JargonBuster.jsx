@@ -4,15 +4,9 @@ import { getGeminiBuster } from '../../services/geminiApi';
 import { Sparkles, Search, Loader2, Copy, Share2, AlertCircle, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const QUICK_TERMS = [
-  "EPIC Card",
-  "EVM / VVPAT",
-  "Model Code of Conduct",
-  "Booth Level Officer (BLO)",
-  "NOTA",
-  "Lok Sabha vs Vidhan Sabha",
-  "Delimitation",
-];
+import { QUICK_TERMS, UI_STRINGS } from '../../config/constants';
+import { sanitizeInput } from '../../utils/security';
+import { trackJargonInsight } from '../../services/bigQueryAnalytics';
 
 
 const JargonBuster = () => {
@@ -25,8 +19,8 @@ const JargonBuster = () => {
   const resultRef = useRef(null);
 
   const handleBust = async (termToBust) => {
-    const term = termToBust || input;
-    if (!term.trim()) return;
+    const term = sanitizeInput(termToBust || input);
+    if (!term) return;
 
     setInput(term);
     setIsGenerating(true);
@@ -34,6 +28,9 @@ const JargonBuster = () => {
     setResult('');
 
     try {
+      // Log to BigQuery for analytical insights
+      trackJargonInsight(term, voterData.stateCode || 'Unknown');
+
       await getGeminiBuster(term, voterData, (streamedText) => {
         setResult(streamedText);
       });
@@ -71,7 +68,7 @@ const JargonBuster = () => {
         </div>
         
         <p className="text-slate-600 mb-6 text-sm">
-          Indian election terms and ECI procedures explained simply — with Hindi translations where applicable.
+          {UI_STRINGS.WELCOME_SUBTITLE} — with Hindi translations where applicable.
         </p>
 
         {/* Search Input */}
@@ -85,7 +82,7 @@ const JargonBuster = () => {
               type="text" 
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="e.g. EPIC Card, EVM, NOTA, BLO..." 
+              placeholder={UI_STRINGS.JARGON_PLACEHOLDER} 
               className="input-field pl-12"
               aria-label="Indian election term to explain"
               disabled={isGenerating}
@@ -95,8 +92,9 @@ const JargonBuster = () => {
             type="submit" 
             disabled={isGenerating || !input.trim()}
             className="btn-primary flex items-center justify-center gap-2 px-8 min-w-[140px]"
+            aria-label={isGenerating ? "Generating explanation" : "Ask AI to explain term"}
           >
-            {isGenerating ? <Loader2 className="animate-spin" size={20} /> : <><Search size={20} /> Explain</>}
+            {isGenerating ? <Loader2 className="animate-spin" size={20} role="status" aria-label="Loading" /> : <><Search size={20} /> Explain</>}
           </button>
         </form>
 
@@ -124,7 +122,9 @@ const JargonBuster = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
             className="glass rounded-2xl overflow-hidden border border-primary-100 shadow-2xl shadow-primary-100/50"
-            aria-live="polite"
+            aria-live="assertive"
+            role="region"
+            aria-label="AI Explanation Result"
           >
             <div className="p-1 bg-gradient-to-r from-primary-400 to-accent-400" />
             <div className="p-6 md:p-8">

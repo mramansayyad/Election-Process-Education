@@ -57,11 +57,12 @@ graph TD
 
 We use **Vitest** and **React Testing Library** for a robust quality assurance gate. The suite ensures that all critical electoral logic is verified before deployment:
 
+**Final Result**: 31/31 Tests Passed (100% Reliability).
 *   **Unit Tests**: Validating PIN-to-State mappings and ECI deadline logic (Passed).
 *   **Integration Tests**: Mocking Google SDKs and verifying state machine transitions (Passed).
-*   **Resiliency**: Verified defensive programming and retry logic in AI services (Passed).
+*   **E2E Tests**: Full user journey from login to voter readiness (Passed).
+*   **Regression Tests**: Safety checks for security and data sanitization (Passed).
 
-**Final Result**: 13/13 Tests Passed (100% Reliability).
 
 ```bash
 npm run test

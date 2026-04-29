@@ -1,4 +1,4 @@
-import { STATE_NAMES, PIN_PREFIX_TO_STATE } from '../constants/indianStates';
+import { STATE_NAMES, PIN_PREFIX_TO_STATE, ECI_LINKS } from '../config/constants';
 
 /**
  * Indian Election Deadlines Utility
@@ -12,14 +12,14 @@ import { STATE_NAMES, PIN_PREFIX_TO_STATE } from '../constants/indianStates';
  * mapped by the user's PIN-detected state.
  */
 
-// Shared ECI portal links
+// Shared ECI portal links from centralized config
 const ECI = {
-  voterSearch: 'https://voters.eci.gov.in',
-  registration: 'https://voters.eci.gov.in/registration/form6',
-  epic: 'https://voters.eci.gov.in/epic-download',
-  nvd: 'https://www.eci.gov.in/national-voters-day',
-  ssr: 'https://www.eci.gov.in/electoral-rolls',
-  blo: 'https://voters.eci.gov.in',
+  voterSearch: ECI_LINKS.ELECTORAL_ROLL,
+  registration: ECI_LINKS.VOTER_PORTAL,
+  epic: ECI_LINKS.VOTER_PORTAL,
+  nvd: ECI_LINKS.VOTER_GUIDE,
+  ssr: ECI_LINKS.VOTER_GUIDE,
+  blo: ECI_LINKS.VOTER_PORTAL,
 };
 
 // National milestones common to every state

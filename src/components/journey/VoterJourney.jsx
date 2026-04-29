@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVoter } from '../../context/VoterContext';
 import { CheckCircle2, Circle, ArrowRight, ArrowLeft, MapPin, UserCheck, HelpCircle } from 'lucide-react';
+import { sanitizeInput, validatePinCode } from '../../utils/security';
 
 // Defined at top to avoid hoisting crash
 const Sparkles = ({ className }) => (
@@ -11,7 +12,9 @@ const Sparkles = ({ className }) => (
   </svg>
 );
 
-// Steps: Registration status + PIN code (login is step 0 handled by App)
+// Registration status + PIN code (login is step 0 handled by App)
+// Steps moved to local scope to handle icons specifically or imported from constants if needed.
+// For the icons we keep them here but can pull text from constants.
 const steps = [
   {
     title: 'Voter Registration',
@@ -19,9 +22,9 @@ const steps = [
     key: 'isRegistered',
     hint: 'You can check on voters.eci.gov.in using your EPIC number or name.',
     options: [
-      { label: "Yes, my name is on the roll", value: true, icon: <UserCheck className="text-green-500" /> },
-      { label: "No, I need to register", value: false, icon: <Circle className="text-slate-400" /> },
-      { label: "I'm not sure", value: 'unsure', icon: <HelpCircle className="text-blue-500" /> },
+      { label: "Yes, my name is on the roll", value: true, icon: <UserCheck className="text-green-500" aria-hidden="true" /> },
+      { label: "No, I need to register", value: false, icon: <Circle className="text-slate-400" aria-hidden="true" /> },
+      { label: "I'm not sure", value: 'unsure', icon: <HelpCircle className="text-blue-500" aria-hidden="true" /> },
     ],
   },
   {
@@ -33,7 +36,7 @@ const steps = [
     maxLength: 6,
     placeholder: 'e.g. 400001',
     hint: 'Your PIN code helps us identify your Assembly Constituency and State.',
-    icon: <MapPin className="text-orange-500" />,
+    icon: <MapPin className="text-orange-500" aria-hidden="true" />,
   },
 ];
 
@@ -52,8 +55,17 @@ const VoterJourney = () => {
   };
 
   const handleInputChange = (e) => {
-    const val = e.target.value.replace(/\D/g, '').slice(0, 6);
+    // Basic sanitization and digit filtering
+    const val = sanitizeInput(e.target.value).replace(/\D/g, '').slice(0, 6);
     updateVoterData({ [step.key]: val });
+  };
+
+  const handleNextStep = () => {
+    if (step.isInput && !validatePinCode(pinValue)) {
+      alert('Please enter a valid 6-digit PIN code.');
+      return;
+    }
+    nextStep();
   };
 
   const pinValue = voterData.pinCode || '';
@@ -61,13 +73,14 @@ const VoterJourney = () => {
   return (
     <div className="max-w-2xl mx-auto py-12 px-4">
       {/* Progress Bar */}
-      <div className="flex gap-2 mb-8">
+      <div className="flex gap-2 mb-8" role="progressbar" aria-valuemin="0" aria-valuemax={steps.length} aria-valuenow={localStep + 1}>
         {steps.map((_, idx) => (
           <div
             key={idx}
             className={`h-2 flex-1 rounded-full transition-all duration-500 ${
               idx <= localStep ? 'bg-orange-500' : 'bg-slate-200'
             }`}
+            aria-hidden="true"
           />
         ))}
       </div>
@@ -103,8 +116,10 @@ const VoterJourney = () => {
                   placeholder={step.placeholder}
                   className="input-field pl-12 text-lg font-medium tracking-widest"
                   autoFocus
+                  aria-required="true"
+                  aria-label="6-digit Indian PIN Code"
                 />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400">
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400" aria-live="polite">
                   {pinValue.length}/6
                 </span>
               </div>
@@ -143,7 +158,7 @@ const VoterJourney = () => {
 
             {step.isInput && (
               <button
-                onClick={nextStep}
+                onClick={handleNextStep}
                 disabled={pinValue.length < 6}
                 className="btn-primary flex items-center gap-2 bg-orange-500 hover:bg-orange-600 disabled:opacity-50"
               >
