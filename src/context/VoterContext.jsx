@@ -12,6 +12,7 @@ export const VoterProvider = ({ children }) => {
       zipCode: '',
       address: '',
       state: '',
+      stateCode: '',
       deadlines: [],
       pollingPlace: null,
     };

@@ -119,7 +119,7 @@ const VoterJourney = () => {
             <button
               onClick={prevStep}
               disabled={currentStep === 0}
-              className="flex items-center gap-2 text-slate-500 font-medium hover:text-slate-800 disabled:opacity-0 transition-all"
+              className="flex items-center gap-2 text-slate-500 font-medium hover:text-slate-800 disabled:opacity-0 transition-all min-h-[44px] px-4 -ml-4"
             >
               <ArrowLeft size={20} />
               Back
