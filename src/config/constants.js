@@ -79,3 +79,6 @@ export const UI_STRINGS = {
   LOGIN_PROMPT: 'Please sign in to access personalized voter milestones.',
   JARGON_PLACEHOLDER: 'Ask about "EVM", "VVPAT", "MCC"...',
 };
+
+export const QUICK_TERMS = ['EVM', 'VVPAT', 'MCC', 'BLO', 'NOTA', 'EPIC'];
+

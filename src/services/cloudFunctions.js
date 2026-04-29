@@ -11,7 +11,7 @@ const CLOUD_FUNCTION_BASE_URL = 'https://us-central1-virtual-promptwars-492614.c
  * In a real-world scenario, this would send telemetry to a serverless backend.
  * @param {Object} data - Telemetry or interaction data to log.
  */
-export const logVoterInteraction = async (data) => {
+export const telemetry = async (data) => {
   try {
     // This is a mock implementation of a Cloud Function trigger
     console.log('[Mock GCP Function] Logging interaction:', data);

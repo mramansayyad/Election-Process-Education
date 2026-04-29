@@ -39,7 +39,7 @@ export const logToBigQuery = async (tableName, payload) => {
     console.log(`[BigQuery Analytics] Streaming to ${BIGQUERY_CONFIG.dataset}.${tableName}:`, row);
 
     // 2. Correlation with Telemetry
-    await telemetry.log(`Analytical event synced: ${tableName}`, { eventId });
+    await telemetry({ event: `Analytical event synced: ${tableName}`, eventId });
 
     return { success: true, eventId };
   } catch (error) {
