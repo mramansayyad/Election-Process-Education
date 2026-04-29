@@ -1,6 +1,6 @@
-# 🇮🇳 Indian Voter Guide: Electoral Education Assistant
+# Indian Voter Guide: Electoral Education Assistant
 
-[![Build Status](https://github.com/mramansayyad/Election-Process-Education/actions/workflows/deploy.yml/badge.svg)](https://github.com/mramansayyad/Election-Process-Education/actions)
+![Screenshot](src/assets/main.png)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Accessibility: WCAG 2.1 AAA](https://img.shields.io/badge/Accessibility-WCAG%202.1%20AAA-blue)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 
