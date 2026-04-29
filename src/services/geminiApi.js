@@ -22,9 +22,10 @@ export const getGeminiBuster = async (term, context = {}, onStream) => {
     throw new Error("Gemini API Key is missing. Please add VITE_GEMINI_API_KEY to your environment.");
   }
 
-  const genAI = new GoogleGenerativeAI(API_KEY);
+  // Using v1 production gateway for Gemini 3 Flash
+  const genAI = new GoogleGenerativeAI(API_KEY, { apiVersion: "v1" });
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-3-flash",
     systemInstruction: SYSTEM_PROMPT,
   });
 
