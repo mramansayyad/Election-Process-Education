@@ -6,7 +6,7 @@ import { VoterProvider } from './context/VoterContext'
 import ErrorBoundary from './components/common/ErrorBoundary.jsx'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 
-const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+const CLIENT_ID = (import.meta.env.VITE_GOOGLE_CLIENT_ID || '').trim();
 
 if (!CLIENT_ID) {
   console.warn('VITE_GOOGLE_CLIENT_ID is not set — Google Sign-In will not work.');
