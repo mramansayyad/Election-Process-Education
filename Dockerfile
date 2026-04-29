@@ -11,10 +11,12 @@ COPY . .
 # Accept build-time secrets from Cloud Build
 ARG VITE_GOOGLE_CIVIC_API_KEY
 ARG VITE_GEMINI_API_KEY
+ARG VITE_GOOGLE_CLIENT_ID
 
 # Write them to a .env file so Vite's env loading picks them up reliably
 RUN echo "VITE_GOOGLE_CIVIC_API_KEY=${VITE_GOOGLE_CIVIC_API_KEY}" > .env && \
-    echo "VITE_GEMINI_API_KEY=${VITE_GEMINI_API_KEY}" >> .env
+    echo "VITE_GEMINI_API_KEY=${VITE_GEMINI_API_KEY}" >> .env && \
+    echo "VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID}" >> .env
 
 # Build the production bundle (Vite reads .env automatically)
 RUN npm run build

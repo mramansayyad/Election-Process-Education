@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useVoter } from '../../context/VoterContext';
 import { CheckCircle2, Circle, ArrowRight, ArrowLeft, MapPin, UserCheck, HelpCircle } from 'lucide-react';
 
-// Defined at top to avoid "used before defined" runtime crash
+// Defined at top to avoid hoisting crash
 const Sparkles = ({ className }) => (
   <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
@@ -11,51 +11,52 @@ const Sparkles = ({ className }) => (
   </svg>
 );
 
+// Steps: Registration status + PIN code (login is step 0 handled by App)
 const steps = [
   {
-    title: "Registration Status",
-    question: "Are you currently registered to vote?",
-    key: "isRegistered",
+    title: 'Voter Registration',
+    question: 'Are you registered to vote in India?',
+    key: 'isRegistered',
+    hint: 'You can check on voters.eci.gov.in using your EPIC number or name.',
     options: [
-      { label: "Yes, I'm all set!", value: true, icon: <UserCheck className="text-green-500" /> },
+      { label: "Yes, my name is on the roll", value: true, icon: <UserCheck className="text-green-500" /> },
       { label: "No, I need to register", value: false, icon: <Circle className="text-slate-400" /> },
-      { label: "I'm not sure", value: "unsure", icon: <HelpCircle className="text-blue-500" /> }
-    ]
+      { label: "I'm not sure", value: 'unsure', icon: <HelpCircle className="text-blue-500" /> },
+    ],
   },
   {
-    title: "First-Time Voter",
-    question: "Is this your first time voting in a major election?",
-    key: "isFirstTime",
-    options: [
-      { label: "Yes, it's my first time!", value: true, icon: <Sparkles className="text-yellow-500" /> },
-      { label: "No, I've voted before", value: false, icon: <CheckCircle2 className="text-primary-500" /> }
-    ]
-  },
-  {
-    title: "Your Location",
-    question: "What is your Zip Code?",
-    key: "zipCode",
+    title: 'Your Location',
+    question: 'Enter your 6-digit PIN Code',
+    key: 'pinCode',
     isInput: true,
-    placeholder: "e.g. 90210",
-    icon: <MapPin className="text-primary-500" />
-  }
+    inputMode: 'numeric',
+    maxLength: 6,
+    placeholder: 'e.g. 400001',
+    hint: 'Your PIN code helps us identify your Assembly Constituency and State.',
+    icon: <MapPin className="text-orange-500" />,
+  },
 ];
 
 const VoterJourney = () => {
   const { voterData, updateVoterData, nextStep, prevStep } = useVoter();
-  const currentStep = Math.min(voterData.step, steps.length - 1);
-  const step = steps[currentStep];
+  // voterData.step: 0 = login (handled by App), 1 = isRegistered, 2 = pinCode
+  // Here step index within this component is (voterData.step - 1)
+  const localStep = Math.min(Math.max(voterData.step - 1, 0), steps.length - 1);
+  const step = steps[localStep];
 
   const handleOptionSelect = (value) => {
     updateVoterData({ [step.key]: value });
-    if (currentStep < steps.length - 1) {
+    if (localStep < steps.length - 1) {
       setTimeout(nextStep, 300);
     }
   };
 
   const handleInputChange = (e) => {
-    updateVoterData({ [step.key]: e.target.value });
+    const val = e.target.value.replace(/\D/g, '').slice(0, 6);
+    updateVoterData({ [step.key]: val });
   };
+
+  const pinValue = voterData.pinCode || '';
 
   return (
     <div className="max-w-2xl mx-auto py-12 px-4">
@@ -65,7 +66,7 @@ const VoterJourney = () => {
           <div
             key={idx}
             className={`h-2 flex-1 rounded-full transition-all duration-500 ${
-              idx <= voterData.step ? 'bg-primary-500' : 'bg-slate-200'
+              idx <= localStep ? 'bg-orange-500' : 'bg-slate-200'
             }`}
           />
         ))}
@@ -73,16 +74,19 @@ const VoterJourney = () => {
 
       <AnimatePresence mode="wait">
         <motion.div
-          key={currentStep}
+          key={localStep}
           initial={{ x: 20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: -20, opacity: 0 }}
           className="card"
         >
-          <span className="text-sm font-semibold text-primary-600 uppercase tracking-wider mb-2 block">
-            Step {currentStep + 1} of {steps.length}
+          <span className="text-sm font-semibold text-orange-500 uppercase tracking-wider mb-2 block">
+            Step {localStep + 1} of {steps.length}
           </span>
-          <h2 className="text-2xl font-bold text-slate-800 mb-6">{step.question}</h2>
+          <h2 className="text-2xl font-bold text-slate-800 mb-2">{step.question}</h2>
+          {step.hint && (
+            <p className="text-sm text-slate-500 mb-6">{step.hint}</p>
+          )}
 
           <div className="space-y-4">
             {step.isInput ? (
@@ -93,13 +97,16 @@ const VoterJourney = () => {
                 <input
                   type="text"
                   inputMode="numeric"
-                  maxLength={5}
-                  value={voterData[step.key] || ''}
+                  maxLength={step.maxLength}
+                  value={pinValue}
                   onChange={handleInputChange}
                   placeholder={step.placeholder}
-                  className="input-field pl-12 text-lg font-medium"
+                  className="input-field pl-12 text-lg font-medium tracking-widest"
                   autoFocus
                 />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400">
+                  {pinValue.length}/6
+                </span>
               </div>
             ) : (
               step.options.map((opt, idx) => (
@@ -108,7 +115,7 @@ const VoterJourney = () => {
                   onClick={() => handleOptionSelect(opt.value)}
                   className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all ${
                     voterData[step.key] === opt.value
-                      ? 'border-primary-500 bg-primary-50'
+                      ? 'border-orange-400 bg-orange-50'
                       : 'border-slate-100 hover:border-slate-200 bg-white'
                   }`}
                 >
@@ -117,7 +124,7 @@ const VoterJourney = () => {
                     <span className="font-semibold text-slate-700">{opt.label}</span>
                   </div>
                   {voterData[step.key] === opt.value && (
-                    <CheckCircle2 className="text-primary-500" size={20} />
+                    <CheckCircle2 className="text-orange-500" size={20} />
                   )}
                 </button>
               ))
@@ -127,23 +134,23 @@ const VoterJourney = () => {
           <div className="mt-10 flex items-center justify-between">
             <button
               onClick={prevStep}
-              disabled={currentStep === 0}
+              disabled={localStep === 0}
               className="flex items-center gap-2 text-slate-500 font-medium hover:text-slate-800 disabled:opacity-0 transition-all min-h-[44px] px-4 -ml-4"
             >
               <ArrowLeft size={20} />
               Back
             </button>
 
-            {step.isInput ? (
+            {step.isInput && (
               <button
                 onClick={nextStep}
-                disabled={!voterData[step.key] || voterData[step.key].length < 5}
-                className="btn-primary flex items-center gap-2"
+                disabled={pinValue.length < 6}
+                className="btn-primary flex items-center gap-2 bg-orange-500 hover:bg-orange-600 disabled:opacity-50"
               >
-                Continue
+                Find My Details
                 <ArrowRight size={20} />
               </button>
-            ) : null}
+            )}
           </div>
         </motion.div>
       </AnimatePresence>

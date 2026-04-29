@@ -6,7 +6,7 @@ import { useVoter } from '../../context/VoterContext';
 
 const ElectionTimeline = () => {
   const { voterData } = useVoter();
-  const deadlines = getDeadlinesForState(voterData.stateCode || voterData.state);
+  const deadlines = getDeadlinesForState(voterData.stateCode || voterData.pinCode);
   const now = new Date();
 
   // Find the next upcoming deadline
@@ -16,8 +16,8 @@ const ElectionTimeline = () => {
     <div className="space-y-12">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">Your Election Timeline</h2>
-          <p className="text-slate-500 text-sm">Actionable deadlines based on your state laws.</p>
+          <h2 className="text-2xl font-bold text-slate-800">Election Milestones</h2>
+          <p className="text-slate-500 text-sm">Key ECI dates and deadlines for your state.</p>
         </div>
         {nextDeadline && (
           <div className="bg-primary-50 px-4 py-2 rounded-full border border-primary-100 flex items-center gap-2">
@@ -61,10 +61,16 @@ const ElectionTimeline = () => {
                   isEven ? 'md:mr-auto md:text-right' : 'md:ml-auto md:text-left'
                 }`}>
                   <div className={`card group p-6 ${isNext ? 'border-primary-200 bg-white shadow-xl shadow-primary-50' : 'bg-white'}`}>
-                    <time dateTime={item.date} className="text-xs font-bold text-primary-600 uppercase tracking-widest block mb-2">
-                      {new Date(item.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    <time dateTime={item.date} className="text-xs font-bold text-orange-600 uppercase tracking-widest block mb-2">
+                      {new Date(item.date).toLocaleDateString('en-IN', { month: 'long', day: 'numeric', year: 'numeric' })}
                     </time>
-                    <h3 className="text-xl font-bold text-slate-800 mb-2">{item.title}</h3>
+                    <h3 className="text-xl font-bold text-slate-800 mb-1">{item.title}</h3>
+                    {item.subtitle && (
+                      <p className="text-xs text-slate-500 italic mb-2">{item.subtitle}</p>
+                    )}
+                    {item.description && (
+                      <p className="text-sm text-slate-600 leading-relaxed mb-2">{item.description}</p>
+                    )}
                     
                     <div className={`flex items-center gap-4 mt-6 ${isEven ? 'md:justify-end' : 'md:justify-start'}`}>
                       <a 

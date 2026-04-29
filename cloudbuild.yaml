@@ -8,9 +8,10 @@ steps:
         docker build \
           --build-arg VITE_GOOGLE_CIVIC_API_KEY=$$CIVIC_KEY \
           --build-arg VITE_GEMINI_API_KEY=$$GEMINI_KEY \
+          --build-arg VITE_GOOGLE_CLIENT_ID=$$GOOGLE_CLIENT_ID \
           -t us-central1-docker.pkg.dev/$PROJECT_ID/election-assistant/app:latest \
           .
-    secretEnv: ['CIVIC_KEY', 'GEMINI_KEY']
+    secretEnv: ['CIVIC_KEY', 'GEMINI_KEY', 'GOOGLE_CLIENT_ID']
 
   # 2. Push to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -37,6 +38,8 @@ availableSecrets:
       env: 'CIVIC_KEY'
     - versionName: projects/$PROJECT_ID/secrets/VITE_GEMINI_API_KEY/versions/latest
       env: 'GEMINI_KEY'
+    - versionName: projects/$PROJECT_ID/secrets/VITE_GOOGLE_CLIENT_ID/versions/latest
+      env: 'GOOGLE_CLIENT_ID'
 
 images:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/election-assistant/app:latest'

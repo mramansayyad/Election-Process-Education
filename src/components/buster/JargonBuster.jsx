@@ -5,12 +5,15 @@ import { Sparkles, Search, Loader2, Copy, Share2, AlertCircle, Check } from 'luc
 import { motion, AnimatePresence } from 'framer-motion';
 
 const QUICK_TERMS = [
-  "Gerrymandering",
-  "Electoral College",
-  "Super PACs",
-  "Provisional Ballot",
-  "Ranked Choice Voting"
+  "EPIC Card",
+  "EVM / VVPAT",
+  "Model Code of Conduct",
+  "Booth Level Officer (BLO)",
+  "NOTA",
+  "Lok Sabha vs Vidhan Sabha",
+  "Delimitation",
 ];
+
 
 const JargonBuster = () => {
   const { voterData } = useVoter();
@@ -64,11 +67,11 @@ const JargonBuster = () => {
           <div className="p-2 bg-primary-100 text-primary-600 rounded-lg">
             <Sparkles size={24} />
           </div>
-          <h3 className="text-xl font-bold text-slate-800">AI Jargon Buster</h3>
+          <h3 className="text-xl font-bold text-slate-800">ECI Jargon Buster</h3>
         </div>
         
         <p className="text-slate-600 mb-6 text-sm">
-          Election laws and terms can be confusing. Our AI Civic Expert is here to simplify them for you.
+          Indian election terms and ECI procedures explained simply — with Hindi translations where applicable.
         </p>
 
         {/* Search Input */}
@@ -82,9 +85,9 @@ const JargonBuster = () => {
               type="text" 
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Enter a term or paste text here..." 
+              placeholder="e.g. EPIC Card, EVM, NOTA, BLO..." 
               className="input-field pl-12"
-              aria-label="Election term to explain"
+              aria-label="Indian election term to explain"
               disabled={isGenerating}
             />
           </div>
