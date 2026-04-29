@@ -3,20 +3,17 @@ import Header from './components/layout/Header';
 import LoginScreen from './components/auth/LoginScreen';
 import VoterJourney from './components/journey/VoterJourney';
 import VoterServicesHub from './components/finder/VoterServicesHub';
-import JargonBuster from './components/buster/JargonBuster';
 import ElectionTimeline from './components/timeline/ElectionTimeline';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import { useVoter } from './context/VoterContext';
 import { motion } from 'framer-motion';
-import { CheckCircle2, ArrowRight, MapPin, LogOut } from 'lucide-react';
+import { CheckCircle2, ArrowRight, MapPin, LogOut, Loader2 } from 'lucide-react';
+import { STATE_NAMES } from './constants/indianStates';
 
-// State code → display name map
-const STATE_NAMES = {
-  DL: 'Delhi', MH: 'Maharashtra', UP: 'Uttar Pradesh', WB: 'West Bengal',
-  TN: 'Tamil Nadu', KA: 'Karnataka', GJ: 'Gujarat', RJ: 'Rajasthan',
-  MP: 'Madhya Pradesh', AP: 'Andhra Pradesh', TS: 'Telangana', KL: 'Kerala',
-  PB: 'Punjab', HR: 'Haryana', BR: 'Bihar', JH: 'Jharkhand',
-};
+// Lazy load heavy components
+const JargonBuster = React.lazy(() => import('./components/buster/JargonBuster'));
+
+
 
 function App() {
   const { voterData, resetJourney, signOut } = useVoter();
@@ -191,7 +188,14 @@ function App() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
                 >
-                  <JargonBuster />
+                  <React.Suspense fallback={
+                    <div className="card bg-white p-8 flex flex-col items-center justify-center min-h-[300px] text-slate-400">
+                      <Loader2 className="animate-spin mb-4" size={32} />
+                      <p className="text-sm font-medium">Initialising AI Assistant...</p>
+                    </div>
+                  }>
+                    <JargonBuster />
+                  </React.Suspense>
                 </motion.div>
               </ErrorBoundary>
             </div>

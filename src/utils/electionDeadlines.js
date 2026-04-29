@@ -1,3 +1,5 @@
+import { STATE_NAMES, PIN_PREFIX_TO_STATE } from '../constants/indianStates';
+
 /**
  * Indian Election Deadlines Utility
  * Based on the Election Commission of India (ECI) schedule:
@@ -144,21 +146,6 @@ const DEADLINES_BY_STATE = {
   ],
 };
 
-// 6-digit PIN prefix → state code mapping (leading 2 digits)
-const PIN_PREFIX_TO_STATE = {
-  '11': 'DL', '12': 'HR', '13': 'PB', '14': 'PB', '16': 'PB', '17': 'HR',
-  '20': 'UP', '21': 'UP', '22': 'UP', '23': 'UP', '24': 'UP', '25': 'UP',
-  '26': 'UP', '27': 'UP', '28': 'UP', '30': 'RJ', '31': 'RJ', '32': 'RJ',
-  '33': 'RJ', '34': 'RJ', '36': 'GJ', '37': 'GJ', '38': 'GJ', '39': 'GJ',
-  '40': 'MH', '41': 'MH', '42': 'MH', '43': 'MH', '44': 'MH', '45': 'MP',
-  '46': 'MP', '47': 'MP', '48': 'MP', '49': 'MP', '50': 'TS', '51': 'AP',
-  '52': 'AP', '53': 'AP', '56': 'KA', '57': 'KA', '58': 'KA', '59': 'KA',
-  '60': 'TN', '61': 'TN', '62': 'TN', '63': 'TN', '64': 'TN',
-  '67': 'KL', '68': 'KL', '69': 'KL', '70': 'WB', '71': 'WB', '72': 'WB',
-  '73': 'WB', '74': 'WB', '80': 'UP', '81': 'UP', '82': 'UP', '83': 'UP',
-  '84': 'UP', '85': 'UP', '80': 'BR', '81': 'BR', '82': 'BR', '83': 'JH',
-  '84': 'JH', '85': 'BR',
-};
 
 /**
  * Derive state code from a 6-digit Indian PIN code.
