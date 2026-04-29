@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useVoter } from '../../context/VoterContext';
 import { getVoterInfo } from '../../services/civicApi';
 import PollingStationCard from './PollingStationCard';
-import { Search, Loader2, AlertCircle, MapPinOff } from 'lucide-react';
+import { Search, Loader2, AlertCircle, MapPinOff, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const PollingFinder = () => {
@@ -78,6 +78,25 @@ const PollingFinder = () => {
           <Loader2 className="animate-spin mb-4" size={40} />
           <p className="font-medium animate-pulse">Fetching official election data...</p>
         </div>
+      )}
+
+      {results?.isMockData && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-4 bg-blue-50 border border-blue-100 rounded-2xl flex items-start gap-4"
+        >
+          <div className="p-2 bg-blue-100 text-blue-600 rounded-lg shrink-0">
+            <Info size={20} />
+          </div>
+          <div>
+            <h4 className="font-semibold text-blue-800">No active election in your area right now</h4>
+            <p className="text-blue-700 text-sm mt-1">
+              The Google Civic API found no upcoming elections for this address. The locations shown below are examples.
+              Check back closer to your next election date!
+            </p>
+          </div>
+        </motion.div>
       )}
 
       {error && (

@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './styles/index.css'
 import { VoterProvider } from './context/VoterContext'
+import ErrorBoundary from './components/common/ErrorBoundary.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <VoterProvider>
-      <App />
-    </VoterProvider>
+    <ErrorBoundary>
+      <VoterProvider>
+        <App />
+      </VoterProvider>
+    </ErrorBoundary>
   </React.StrictMode>,
 )
